@@ -1,6 +1,7 @@
-INTRODUCTION
-MACA is an R package with code implemented for multi-ancestry colocalization approaches. 
+# MACA
+An R package for multi-ancestry colocalization approaches. 
 
-INSTALLATION
-install.packages("devtools")
+## INSTALLATION 
+```r
+install.packages("devtools") 
 devtools::install_github("cthyshn/MACA")
