@@ -12,3 +12,5 @@ RoxygenNote: 7.3.2
 Imports:
     coloc,
     data.table
+URL: https://github.com/cthyshn/MACA
+BugReports: https://github.com/cthyshn/MACA/issues
