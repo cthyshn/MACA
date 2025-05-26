@@ -104,8 +104,8 @@ ecaviar_susiex <- function(t1, t2) {
   scaled_clpp <- sweep(clpp, 2, colSums(clpp), FUN = "/")
   locus_level_clpp <- colSums(clpp)
 
-  clpp$snps <- t1$SNP
-  scaled_clpp$snps <- t1$SNP
+  clpp <- data.frame(snps = t1$SNP, clpp)
+  scaled_clpp <- data.frame(snps = t1$SNP, scaled_clpp)
 
 
   results <- list(clpp, scaled_clpp, locus_level_clpp)
