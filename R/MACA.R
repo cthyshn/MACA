@@ -147,15 +147,15 @@ coloc_mscaviar <- function(t1, t2, p1 = 1e-4, p2=1e-4, p12=5e-6, overlap.min=0.5
 #'@param rowind coloc comparison of interest to generate a credible set for (which row)
 #'@export
 
-make_coloc_susiex_credible_set <- function(cs_res, rowind) {
+make_coloc_susiex_credible_set <- function(cs_res, rowind, thresh=0.95) {
   cs_res$results <- as.data.frame(cs_res$results)
   cs_res_sorted <- cs_res$results[order(cs_res$results[,rowind+1], decreasing = TRUE),]
   cumsum <- cumsum(cs_res_sorted[,rowind+1])
-  if (cs_res_sorted[1,rowind+1] > 0.95) {
+  if (cs_res_sorted[1,rowind+1] > thresh) {
     cs <- cs_res_sorted[1,]
   } else {
-    cs <- cs_res_sorted[which(cumsum <= 0.95),]
-    while (cumsum(cs[,rowind+1])[nrow(cs)] < 0.95) {
+    cs <- cs_res_sorted[which(cumsum <= thresh),]
+    while (cumsum(cs[,rowind+1])[nrow(cs)] < thresh) {
       cs <- rbind(cs, cs_res_sorted[nrow(cs)+1,])
     }
   }
@@ -165,14 +165,14 @@ make_coloc_susiex_credible_set <- function(cs_res, rowind) {
 
 #'@param ems_res emscaviar results
 #'@export
-make_emscaviar_credible_set <- function(ems_res) {
+make_emscaviar_credible_set <- function(ems_res, thresh=0.95) {
   ems_res_sorted <- ems_res[order(-ems_res$scaled_clpp),]
   cumsum <- cumsum(ems_res_sorted$scaled_clpp)
-  if (cumsum[1] > 0.95) {
+  if (cumsum[1] > thresh) {
     cs <- ems_res_sorted[1,]
   } else {
-    cs <- ems_res_sorted[cumsum <= 0.95,]
-    if (cumsum(cs[nrow(cs),2]) < 0.95) {
+    cs <- ems_res_sorted[cumsum <= thresh,]
+    if (cumsum(cs[nrow(cs),2]) < thresh) {
       cs <- rbind(cs, ems_res_sorted[nrow(cs)+1,])
     }
   }
@@ -184,14 +184,14 @@ make_emscaviar_credible_set <- function(ems_res) {
 #'@param es_res susiex_ecaivar results
 #'@param rowind coloc comparison to generate a credible set for (which row)
 #'@export
-make_ecaviar_susiex_credible_set <- function(es_res, rowind) {
+make_ecaviar_susiex_credible_set <- function(es_res, rowind, thresh=0.95) {
   es_res_sorted <- es_res[order(es_res[,rowind+1], decreasing = TRUE),]
   cumsum <- cumsum(es_res_sorted[,rowind+1])
-  if (es_res_sorted[1,rowind+1] > 0.95) {
+  if (es_res_sorted[1,rowind+1] > thresh) {
     cs <- es_res_sorted[1,]
   } else {
-    cs <- es_res_sorted[which(cumsum <= 0.95),]
-    while (cumsum(cs[,rowind+1])[nrow(cs)] < 0.95) {
+    cs <- es_res_sorted[which(cumsum <= thresh),]
+    while (cumsum(cs[,rowind+1])[nrow(cs)] < thresh) {
       cs <- rbind(cs, es_res_sorted[nrow(cs) + 1,])
     }
   }
@@ -201,14 +201,14 @@ make_ecaviar_susiex_credible_set <- function(es_res, rowind) {
 
 #'@param cm_res coloc_mscaviar results
 #'@export
-make_coloc_mscaviar_credible_set <- function(cm_res) {
+make_coloc_mscaviar_credible_set <- function(cm_res, thresh=0.95) {
   cm_res_sorted <- cm_res$results[order(cm_res$results$SNP.PP.H4.abf, decreasing = TRUE),]
   cumsum <- cumsum(cm_res_sorted$SNP.PP.H4.abf)
-  if (cm_res_sorted$SNP.PP.H4.abf[1] > 0.95) {
+  if (cm_res_sorted$SNP.PP.H4.abf[1] > thresh) {
     cs <- cm_res_sorted[1,]
   } else {
-    cs <- cm_res_sorted[cumsum <= 0.95,]
-    if (cumsum(cs[nrow(cs),2]) < 0.95) {
+    cs <- cm_res_sorted[cumsum <= thresh,]
+    if (cumsum(cs[nrow(cs),2]) < thresh) {
       cs <- rbind(cs, cm_res_sorted[nrow(cs)+1,])
     }
   }
