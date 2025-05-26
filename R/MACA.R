@@ -49,27 +49,27 @@ coloc_susiex <- function(t1, t2, p1 = 1e-4, p2=1e-4, p12=5e-6, overlap.min=0.5, 
 
 #'@param t1 mscaviar post.txt output file for trait 1
 #'@param t2 mscaviar post.txt output file for trait 2
-#'@return emscaviar colocalization results
+#'@return msecaviar colocalization results
 #'@export
 
-emscaviar <- function(t1,t2) {
+msecaviar <- function(t1,t2) {
   clpp <- t1$Prob_in_pCausalSet * t2$Prob_in_pCausalSet
   scaled_clpp <- clpp / sum(clpp)
   locus_level_clpp <- sum(clpp)
   snps <- t1$SNP_ID
 
-  emscaviar_result <- list(data.frame(snps, scaled_clpp, clpp), locus_level_clpp)
-  names(emscaviar_result) <- c("variant_level", "locus_level_clpp")
+  msecaviar_result <- list(data.frame(snps, scaled_clpp, clpp), locus_level_clpp)
+  names(msecaviar_result) <- c("variant_level", "locus_level_clpp")
 
-  return(emscaviar_result)
+  return(msecaviar_result)
 }
 
 #'@param t1 SuSiEx .snp file output from trait 1
 #'@param t2 SuSiEx .snp file output from trait 2
-#'@return ecaviar_susiex colocalization results
+#'@return SuSiEx_eCAVIAR colocalization results
 #'@export
 
-ecaviar_susiex <- function(t1, t2) {
+susiex_ecaviar <- function(t1, t2) {
 
   t1 <- as.data.frame(t1)
   t2 <- as.data.frame(t2)
@@ -121,10 +121,10 @@ ecaviar_susiex <- function(t1, t2) {
 #'@param p1 prior probability that a SNP is causal for trait 1
 #'@param p2 prior probability that a SNP is causal for trait 2
 #'@param p12 prior probability that a SNP is causal for both traits
-#'@return coloc style result for coloc_mscaviar
+#'@return coloc style result for MsCAVIAR_coloc
 #'@export
 
-coloc_mscaviar <- function(t1, t2, p1 = 1e-4, p2=1e-4, p12=5e-6, overlap.min=0.5, trim_by_posterior=T) {
+mscaviar_coloc <- function(t1, t2, p1 = 1e-4, p2=1e-4, p12=5e-6, overlap.min=0.5, trim_by_posterior=T) {
 
   t1$Prob_in_pCausalSet[which(t1$Prob_in_pCausalSet == 1)] <- 1 - 1e-12
   t1$Prob_in_pCausalSet[which(t1$Prob_in_pCausalSet == 0)] <- 1e-12
@@ -137,8 +137,8 @@ coloc_mscaviar <- function(t1, t2, p1 = 1e-4, p2=1e-4, p12=5e-6, overlap.min=0.5
   logbft2 <- as.vector(unlist(log(bft2)))
   names(logbft1) <- names(logbft2) <- as.vector(unlist(t1$SNP_ID))
 
-  coloc_mscaviar_result <- coloc:::coloc.bf_bf(logbft1, logbft2, p1, p2, p12, overlap.min, trim_by_posterior)
-  return(coloc_mscaviar_result)
+  mscaviar_coloc_result <- coloc:::coloc.bf_bf(logbft1, logbft2, p1, p2, p12, overlap.min, trim_by_posterior)
+  return(mscaviar_coloc_result)
 
 }
 
@@ -163,8 +163,9 @@ make_coloc_susiex_credible_set <- function(cs_res, rowind, thresh=0.95) {
 }
 
 
-#'@param ems_res emscaviar results
+#'@param mse_res msecaviar results
 #'@export
+<<<<<<< HEAD
 make_emscaviar_credible_set <- function(ems_res, thresh=0.95) {
   ems_res_sorted <- ems_res[order(-ems_res$scaled_clpp),]
   cumsum <- cumsum(ems_res_sorted$scaled_clpp)
@@ -174,6 +175,17 @@ make_emscaviar_credible_set <- function(ems_res, thresh=0.95) {
     cs <- ems_res_sorted[cumsum <= thresh,]
     if (cumsum(cs[nrow(cs),2]) < thresh) {
       cs <- rbind(cs, ems_res_sorted[nrow(cs)+1,])
+=======
+make_msecaviar_credible_set <- function(mse_res) {
+  mse_res_sorted <- mse_res[order(-mse_res$scaled_clpp),]
+  cumsum <- cumsum(mse_res_sorted$scaled_clpp)
+  if (cumsum[1] > 0.95) {
+    cs <- mse_res_sorted[1,]
+  } else {
+    cs <- mse_res_sorted[cumsum <= 0.95,]
+    if (cumsum(cs[nrow(cs),2]) < 0.95) {
+      cs <- rbind(cs, mse_res_sorted[nrow(cs)+1,])
+>>>>>>> parent of a79c641 (Fix Naming)
     }
   }
 
@@ -181,9 +193,10 @@ make_emscaviar_credible_set <- function(ems_res, thresh=0.95) {
 }
 
 
-#'@param es_res susiex_ecaivar results
+#'@param se_res susiex_ecaivar results
 #'@param rowind coloc comparison to generate a credible set for (which row)
 #'@export
+<<<<<<< HEAD
 make_ecaviar_susiex_credible_set <- function(es_res, rowind, thresh=0.95) {
   es_res_sorted <- es_res[order(es_res[,rowind+1], decreasing = TRUE),]
   cumsum <- cumsum(es_res_sorted[,rowind+1])
@@ -193,14 +206,26 @@ make_ecaviar_susiex_credible_set <- function(es_res, rowind, thresh=0.95) {
     cs <- es_res_sorted[which(cumsum <= thresh),]
     while (cumsum(cs[,rowind+1])[nrow(cs)] < thresh) {
       cs <- rbind(cs, es_res_sorted[nrow(cs) + 1,])
+=======
+make_susiex_ecaviar_credible_set <- function(se_res, rowind) {
+  se_res_sorted <- se_res[order(se_res[,rowind+1], decreasing = TRUE),]
+  cumsum <- cumsum(se_res_sorted[,rowind+1])
+  if (se_res_sorted[1,rowind+1] > 0.95) {
+    cs <- se_res_sorted[1,]
+  } else {
+    cs <- se_res_sorted[which(cumsum <= 0.95),]
+    while (cumsum(cs[,rowind+1])[nrow(cs)] < 0.95) {
+      cs <- rbind(cs, se_res_sorted[nrow(cs) + 1,])
+>>>>>>> parent of a79c641 (Fix Naming)
     }
   }
   return(cs)
 }
 
 
-#'@param cm_res coloc_mscaviar results
+#'@param mc_res mscaviar_coloc results
 #'@export
+<<<<<<< HEAD
 make_coloc_mscaviar_credible_set <- function(cm_res, thresh=0.95) {
   cm_res_sorted <- cm_res$results[order(cm_res$results$SNP.PP.H4.abf, decreasing = TRUE),]
   cumsum <- cumsum(cm_res_sorted$SNP.PP.H4.abf)
@@ -210,6 +235,17 @@ make_coloc_mscaviar_credible_set <- function(cm_res, thresh=0.95) {
     cs <- cm_res_sorted[cumsum <= thresh,]
     if (cumsum(cs[nrow(cs),2]) < thresh) {
       cs <- rbind(cs, cm_res_sorted[nrow(cs)+1,])
+=======
+make_mscaviar_coloc_credible_set <- function(mc_res) {
+  mc_res_sorted <- mc_res$results[order(mc_res$results$SNP.PP.H4.abf, decreasing = TRUE),]
+  cumsum <- cumsum(mc_res_sorted$SNP.PP.H4.abf)
+  if (mc_res_sorted$SNP.PP.H4.abf[1] > 0.95) {
+    cs <- mc_res_sorted[1,]
+  } else {
+    cs <- mc_res_sorted[cumsum <= 0.95,]
+    if (cumsum(cs[nrow(cs),2]) < 0.95) {
+      cs <- rbind(cs, mc_res_sorted[nrow(cs)+1,])
+>>>>>>> parent of a79c641 (Fix Naming)
     }
   }
 }
