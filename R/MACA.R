@@ -185,17 +185,17 @@ make_emscaviar_credible_set <- function(ems_res, thresh) {
 #'@param rowind coloc comparison to generate a credible set for (which row)
 #'@export
 make_ecaviar_susiex_credible_set <- function(es_res, rowind, thresh) {
-  es_res_sorted <- es_res[order(es_res[,rowind+1], decreasing = TRUE),]
-  cumsum <- cumsum(es_res_sorted[,rowind+1])
-  if (es_res_sorted[1,rowind+1] > thresh) {
-    cs <- es_res_sorted[1,]
-  } else {
-    cs <- es_res_sorted[which(cumsum <= thresh),]
-    while (cumsum(cs[,rowind+1])[nrow(cs)] < thresh) {
-      cs <- rbind(cs, es_res_sorted[nrow(cs) + 1,])
-    }
+es_res_sorted <- es_res$scaled_clpp[order(es_res$scaled_clpp[,rowind+1], decreasing = TRUE),]
+cumsum <- cumsum(es_res_sorted[,rowind+1])
+if (es_res_sorted[1,rowind+1] > thresh) {
+  cs <- es_res_sorted[1,]
+} else {
+  cs <- es_res_sorted[which(cumsum <= thresh),]
+  while (cumsum(cs[,rowind+1])[nrow(cs)] < thresh) {
+    cs <- rbind(cs, es_res_sorted[nrow(cs) + 1,])
   }
-  return(cs)
+}
+return(cs)
 }
 
 
