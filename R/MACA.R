@@ -166,18 +166,15 @@ make_coloc_susiex_credible_set <- function(cs_res, rowind, thresh) {
 #'@param ems_res emscaviar results
 #'@export
 make_emscaviar_credible_set <- function(ems_res, thresh) {
-  ems_res_sorted <- ems_res[order(-ems_res$scaled_clpp),]
-  cumsum <- cumsum(ems_res_sorted$scaled_clpp)
-  if (cumsum[1] > thresh) {
-    cs <- ems_res_sorted[1,]
-  } else {
-    cs <- ems_res_sorted[cumsum <= thresh,]
-    if (cumsum(cs[nrow(cs),2]) < thresh) {
-      cs <- rbind(cs, ems_res_sorted[nrow(cs)+1,])
-    }
+ems_res_sorted <- ems_res$variant_level[order(ems_res$variant_level$scaled_clpp, decreasing = TRUE),]
+cumsum <- cumsum(ems_res_sorted$scaled_clpp)
+if (cumsum[1] > thresh) {
+  cs <- ems_res_sorted[1,]
+} else {
+  cs <- ems_res_sorted[cumsum <= thresh,]
+  if (cumsum(cs[nrow(cs),2]) < thresh) {
+    cs <- rbind(cs, ems_res_sorted[nrow(cs)+1,])
   }
-
-  return(cs)
 }
 
 
