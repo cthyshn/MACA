@@ -176,6 +176,7 @@ if (cumsum[1] > thresh) {
     cs <- rbind(cs, ems_res_sorted[nrow(cs)+1,])
   }
 }
+}
 
 
 #'@param es_res susiex_ecaivar results
